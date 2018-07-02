@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>D3 Tutorial</title>
+  <script src="https://d3js.org/d3.v3.js"></script>
+</head>
+<body>
+
+  <div></div>
+  <script type="text/javascript">
+
+  var url = "http://localhost:8080/data?nodes=20&items=1000";
+  httpGetAsync(url, processData);
+
+  function httpGetAsync(theUrl, callback)
+  {
+    var xmlHttp = new XMLHttpRequest();
+    xmlHttp.open("GET", theUrl, true);
+    xmlHttp.setRequestHeader( 'Content-type', 'application/json');
+    xmlHttp.send();
+    xmlHttp.onreadystatechange = function() {
+        if (xmlHttp.readyState == 4 && xmlHttp.status == 200)
+            callback(xmlHttp.responseText);
+    }
+  }
+
+  function processData(res){
+    var obj = JSON.parse(res);
+    var data_values = obj['data_values'];
+    console.log(data_values);
+
+    var svg = d3.select("div").append("svg").attr({"width":450, "height":400});
+    var bars = svg.selectAll("rect").data(data_values).enter().append("rect").attr("width", "25px");
+    bars.attr("height",function(d){return d*5;});
+    bars.attr("x", function(d, i){return i*30; });
+    bars.attr("y", function(d){return 400-d*5;});
+    bars.attr("fill", "blue");
+  }
+
+  </script>
+
+</body>
+</html>
